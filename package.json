@@ -1,0 +1,27 @@
+{
+  "name": "web3-telegram-bot",
+  "version": "1.0.0",
+  "description": "Decentralized Web3 Community Marketing & Announcement Platform (Telegram Mini-App)",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "@walletconnect/modal": "^2.7.0",
+    "@walletconnect/sign-client": "^2.10.4-184f2234",
+    "@walletconnect/web3-provider": "^1.8.0",
+    "axios": "^1.7.7",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^7.8.2",
+    "node-telegram-bot-api": "^0.61.0",
+    "web3": "^1.10.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}
