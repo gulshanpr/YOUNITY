@@ -28,7 +28,6 @@ try {
 
 let groupId = "";
 
-
 const commands = [
   { command: "start", description: "Start the bot" },
   { command: "help", description: "List available commands" },
@@ -67,7 +66,6 @@ bot.on("message", async (msg) => {
             msg.chat.id,
             "Hello! I'm fully functional as I have admin permissions. Thanks for inviting me!"
           );
-
         } else {
           console.log("Bot is not an admin in this group.");
 
