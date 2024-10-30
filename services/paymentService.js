@@ -9,38 +9,6 @@ import { sendAnnouncmentInCommunityGroup } from "../controllers/privateGroupCont
 let signClient;
 let walletConnectModal;
 
-const MANIFEST = {
-  url: process.env.APP_URL || "https://your-app.com",
-  name: "TON Payment Bot",
-  iconUrl: `${process.env.APP_URL}/icon.png`,
-};
-
-class TonConnectStorage {
-  constructor(chatId) {
-    this.chatId = chatId;
-    this.storage = new Map();
-  }
-
-  async setItem(key, value) {
-    this.storage.set(`${this.chatId}:${key}`, value);
-  }
-
-  async getItem(key) {
-    return this.storage.get(`${this.chatId}:${key}`);
-  }
-
-  async removeItem(key) {
-    this.storage.delete(`${this.chatId}:${key}`);
-  }
-}
-
-const createConnector = (chatId) => {
-  return new TonConnect({
-    manifestUrl: MANIFEST,
-    storage: new TonConnectStorage(chatId),
-  });
-};
-
 const initializeProvider = async () => {
   if (!signClient) {
     signClient = await signClient2.init({
@@ -56,7 +24,7 @@ const initializeProvider = async () => {
 
     walletConnectModal = new WalletConnectModal({
       projectId: config.WALLETCONNECT_PROJECT_ID,
-      standaloneChains: ["eip155:5545"],
+      standaloneChains: ["eip155:84532"],
     });
   }
 
@@ -71,7 +39,7 @@ const initializeProvider = async () => {
             "personal_sign",
             "eth_signTypedData",
           ],
-          chains: ["eip155:5545"],
+          chains: ["eip155:84532"],
           events: ["chainChanged", "accountsChanged"],
         },
       },
@@ -152,7 +120,7 @@ const requestPayment = async (announcement, totalPrice, chatId, bot, user) => {
     // Send the transaction with the adjusted values
     const result = await signClient.request({
       topic: session.topic,
-      chainId: "eip155:5545",
+      chainId: "eip155:84532",
       request: {
         method: "eth_sendTransaction",
         params: [

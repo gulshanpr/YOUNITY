@@ -13,10 +13,6 @@ export const handleAnnouncementCreation = async (bot, msg) => {
   try {
     const chatId = msg.chat.id;
 
-    function isValidCommaSeparatedNumbers(input) {
-      return /^[0-9]+(,[0-9]+)*$/.test(input);
-    }
-
     function hasValidSelections(selectedNumbers, validMap) {
       return selectedNumbers.some((num) => validMap[num]);
     }
@@ -42,8 +38,10 @@ export const handleAnnouncementCreation = async (bot, msg) => {
     };
 
     // Update the validation function to ignore spaces and validate properly
-    function isValidCommaSeparatedNumbersForRegions(input) {
-      return /^[0-9]+(,[0-9]+)*$/.test(input);
+    function isValidCommaSeparatedNumbers(input) {
+      const noSpacesPattern = /^[0-9]+(,[0-9]+)*$/;
+      const withSpacesPattern = /^[0-9]+(, [0-9]+)*$/;
+      return noSpacesPattern.test(input) || withSpacesPattern.test(input);
     }
 
     // Processing the input
@@ -55,7 +53,7 @@ export const handleAnnouncementCreation = async (bot, msg) => {
     let response = await waitForMessage(bot, chatId);
 
     // Keep asking for valid input if necessary
-    while (!isValidCommaSeparatedNumbersForRegions(response.text)) {
+    while (!isValidCommaSeparatedNumbers(response.text)) {
       await bot.sendMessage(
         chatId,
         "Invalid input. Please enter the corresponding numbers as comma-separated values (e.g., 1,2,3)."
@@ -70,13 +68,14 @@ export const handleAnnouncementCreation = async (bot, msg) => {
 
     console.log(selectedNumbers);
 
+    let invaildSelection = await waitForMessage(bot, chatId);
     // Validate selections against regionMap
-    if (!hasValidSelections(selectedNumbers, regionMap)) {
+    while (!hasValidSelections(selectedNumbers, regionMap)) {
       await bot.sendMessage(
         chatId,
         "Invalid selection. Please select at least one valid region."
       );
-      return;
+      invaildSelection = await waitForMessage(bot, chatId);
     }
 
     // Map selected numbers to corresponding regions
@@ -170,7 +169,7 @@ export const handleAnnouncementCreation = async (bot, msg) => {
 
     let categoryResponse = await waitForMessage(bot, chatId);
 
-    while (!isValidNumberList(categoryResponse.text, validCategoryNumbers)) {
+    while (!isValidCommaSeparatedNumbers(categoryResponse.text)) {
       await bot.sendMessage(
         chatId,
         "Invalid input. Please enter at least one valid number (e.g., 1,2,3)."
