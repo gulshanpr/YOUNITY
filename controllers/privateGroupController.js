@@ -170,7 +170,7 @@ export const setupReactionHandler = (bot) => {
         ) {
           console.log("Announcement has been approved");
 
-          const chatIds = ["-4530450065", "-4524819557"];
+          const chatIds = ["-4530450065", "-4524819557"]; // here goes the signed up communities group id
 
           for (const chatId of chatIds) {
             await bot.sendMessage(chatId, originalMessage);

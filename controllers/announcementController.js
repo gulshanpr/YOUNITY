@@ -68,14 +68,13 @@ export const handleAnnouncementCreation = async (bot, msg) => {
 
     console.log(selectedNumbers);
 
-    let invaildSelection = await waitForMessage(bot, chatId);
     // Validate selections against regionMap
-    while (!hasValidSelections(selectedNumbers, regionMap)) {
+    if (!hasValidSelections(selectedNumbers, regionMap)) {
       await bot.sendMessage(
         chatId,
         "Invalid selection. Please select at least one valid region."
       );
-      invaildSelection = await waitForMessage(bot, chatId);
+      return;
     }
 
     // Map selected numbers to corresponding regions

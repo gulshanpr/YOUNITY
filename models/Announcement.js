@@ -58,7 +58,7 @@ const announcementSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["pending", "validated", "approved", "circulated", "rejected"],
+    enum: ["pending", "validated", "circulated", "rejected"], // circulated means message is sent to the community, validated means payment is successful and message is in communities node, pending means something wrong with payment gotta check that, rejected means payment is rejected
     default: "pending",
   },
   likes: [

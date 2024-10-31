@@ -23,7 +23,7 @@ export async function initiateValidationProcess(announcementId, bot) {
           }
 
           if (approvalCount >= approvalThreshold) {
-            announcement.status = "approved";
+            announcement.status = "approved"; // removed from mongoDB
             announcement.save();
             postAnnouncementToCommunities(announcement, bot);
           }
