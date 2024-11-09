@@ -1,20 +1,36 @@
-import TelegramBot from "node-telegram-bot-api";
-import config from "./config/config.js";
-import * as announcementController from "./controllers/announcementController.js";
-import * as communityController from "./controllers/communityController.js";
-import * as startController from "./controllers/startController.js";
-import { isBotAdminInGroup } from "./services/adminService.js";
-import { handleOnBoardCommunity } from "./controllers/onBoardCommunityController.js";
-import { handlePreviewAnnouncement } from "./controllers/previewController.js";
-import { myAnnouncements } from "./controllers/myAnnouncmentController.js";
-import { myCommunity } from "./controllers/myCommunityController.js";
-import { handleHelp } from "./controllers/helpController.js";
-import { setupReactionHandler } from "./controllers/privateGroupController.js";
+import express from 'express';
+import TelegramBot from 'node-telegram-bot-api';
+import config from './config/config.js';
+import * as announcementController from './controllers/announcementController.js';
+import * as communityController from './controllers/communityController.js';
+import * as startController from './controllers/startController.js';
+import { isBotAdminInGroup } from './services/adminService.js';
+import { handleOnBoardCommunity } from './controllers/onBoardCommunityController.js';
+import { handlePreviewAnnouncement } from './controllers/previewController.js';
+import { myAnnouncements } from './controllers/myAnnouncmentController.js';
+import { myCommunity } from './controllers/myCommunityController.js';
+import { handleHelp } from './controllers/helpController.js';
+import { setupReactionHandler } from './controllers/privateGroupController.js';
 
-const bot = new TelegramBot(config.BOT_TOKEN, {
-  polling: {
-    allowed_updates: ["message", "message_reaction", "message_reaction_count"],
-  },
+const app = express();
+const bot = new TelegramBot(config.BOT_TOKEN, { webHook: true });
+bot.setWebHook(`${config.WEBHOOK_URL}/webhook`);
+
+app.use(express.json()); // To parse JSON requests
+
+// Define webhook endpoint
+app.post('/webhook', (req, res) => {
+  bot.processUpdate(req.body);
+  res.sendStatus(200); // Respond to Telegram with OK status
+});
+
+// Add all your bot's existing message handlers here
+bot.on('message', async (msg) => {
+  // Your message handling code here
+});
+
+bot.onText(/\/start/, async (msg) => {
+  startController.handleStart(bot, msg);
 });
 
 let botInfo = null;
@@ -125,9 +141,9 @@ bot.on("polling_error", (error) =>
   console.error(`Polling error: ${error.message}`)
 );
 
-bot.onText(/\/start/, async (msg) => {
-  startController.handleStart(bot, msg);
-});
+// bot.onText(/\/start/, async (msg) => {
+//   startController.handleStart(bot, msg);
+// });
 
 bot.onText(/\/create_announcement/, (msg) => {
   announcementController.handleAnnouncementCreation(bot, msg);
@@ -158,5 +174,12 @@ bot.onText(/\/membercount/, async (msg) => {
   const memberCount = await bot.getChatMemberCount(groupId);
   console.log(`Number of members in chat: ${memberCount}`);
 });
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+
 
 export default bot;

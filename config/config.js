@@ -10,6 +10,7 @@ const config = {
   BASE_RPC_URL: "https://sepolia.base.org",
   WALLET_CONNECT_BRIDGE: "https://bridge.walletconnect.org",
   BOT_ADMIN_ID: process.env.BOT_ADMIN_ID,
+  WEBHOOK_URL: process.env.WEBHOOK_URL,
 };
 
 export default config;

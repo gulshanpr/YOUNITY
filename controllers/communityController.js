@@ -3,7 +3,6 @@ import { Community } from "../models/Community.js";
 export const handleBotInvite = async (bot, msg) => {
   try {
     const chatId = msg.chat.id;
-
     const options = {
       reply_markup: {
         inline_keyboard: [
