@@ -13,26 +13,25 @@ import { handleHelp } from './controllers/helpController.js';
 import { setupReactionHandler } from './controllers/privateGroupController.js';
 
 const app = express();
-const bot = new TelegramBot(config.BOT_TOKEN, { webHook: true });
+
+// Initialize the bot with webhook configuration
+const bot = new TelegramBot(config.BOT_TOKEN, {
+  webHook: true,
+});
+
+// Set the webhook URL to listen for updates from Telegram
 bot.setWebHook(`${config.WEBHOOK_URL}/webhook`);
 
-app.use(express.json()); // To parse JSON requests
+// Middleware to parse JSON for webhook updates
+app.use(express.json());
 
-// Define webhook endpoint
+// Define the webhook endpoint where Telegram will send updates
 app.post('/webhook', (req, res) => {
-  bot.processUpdate(req.body);
-  res.sendStatus(200); // Respond to Telegram with OK status
+  bot.processUpdate(req.body);  // Process the update sent from Telegram
+  res.sendStatus(200);  // Respond with OK status to Telegram
 });
 
-// Add all your bot's existing message handlers here
-bot.on('message', async (msg) => {
-  // Your message handling code here
-});
-
-bot.onText(/\/start/, async (msg) => {
-  startController.handleStart(bot, msg);
-});
-
+// Fetch bot info (Bot's username and ID)
 let botInfo = null;
 try {
   const info = await bot.getMe();
@@ -44,6 +43,7 @@ try {
 
 let groupId = "";
 
+// Set the commands available to users
 const commands = [
   { command: "start", description: "Start the bot" },
   { command: "help", description: "List available commands" },
@@ -58,10 +58,17 @@ const commands = [
   },
 ];
 
+// Set the commands for the bot
 bot.setMyCommands(commands).then(() => {
   console.log("Commands set successfully");
 });
 
+// Handle the /start command
+bot.onText(/\/start/, async (msg) => {
+  startController.handleStart(bot, msg);
+});
+
+// Handle messages where the bot is added to a group
 bot.on("message", async (msg) => {
   try {
     if (msg.new_chat_members) {
@@ -98,8 +105,10 @@ bot.on("message", async (msg) => {
   }
 });
 
+// Setup reaction handler
 setupReactionHandler(bot);
 
+// Handle callback queries (e.g., button clicks in messages)
 bot.on("callback_query", async (callbackQuery) => {
   const msg = callbackQuery.message;
 
@@ -137,14 +146,12 @@ bot.on("callback_query", async (callbackQuery) => {
   }
 });
 
+// Handle any polling errors (though not needed for webhook)
 bot.on("polling_error", (error) =>
   console.error(`Polling error: ${error.message}`)
 );
 
-// bot.onText(/\/start/, async (msg) => {
-//   startController.handleStart(bot, msg);
-// });
-
+// Additional message handlers for specific commands
 bot.onText(/\/create_announcement/, (msg) => {
   announcementController.handleAnnouncementCreation(bot, msg);
 });
@@ -169,17 +176,17 @@ bot.onText(/\/help/, (msg) => {
   handleHelp(bot, msg);
 });
 
+// Handle the /membercount command (returns the number of members in a group)
 bot.onText(/\/membercount/, async (msg) => {
-  const groupId = "-1002387804281";
+  const groupId = "-1002387804281";  // Replace with the actual group ID
   const memberCount = await bot.getChatMemberCount(groupId);
   console.log(`Number of members in chat: ${memberCount}`);
 });
 
+// Start the Express server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
-
 
 export default bot;
