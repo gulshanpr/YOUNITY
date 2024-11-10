@@ -3,7 +3,6 @@ import config from "./config/config.js";
 import * as communityController from "./controllers/communityController.js";
 import bot from "./bot.js";
 
-
 mongoose
   .connect(config.MONGO_URI, {
     useNewUrlParser: true,
@@ -12,23 +11,20 @@ mongoose
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log(err));
 
-
 const isAdmin = (userId) => {
-  return adminService.isAdmin(userId);
+  return config.BOT_ADMIN_ID === userId;
 };
 
-bot.onText(/\/add_community/, (msg) => {
-  const userId = msg.from.id;
+// bot.onText(/\/add_community/, (msg) => {
+//   const userId = msg.from.id;
 
-  if (!isAdmin(userId)) {
-    return bot.sendMessage(
-      msg.chat.id,
-      "Unauthorized. You are not allowed to use this command."
-    );
-  }
-
-});
-
+//   if (!isAdmin(userId)) {
+//     return bot.sendMessage(
+//       msg.chat.id,
+//       "Unauthorized. You are not allowed to use this command."
+//     );
+//   }
+// });
 
 bot.onText(/\/list_communities/, async (msg) => {
   const userId = msg.from.id;

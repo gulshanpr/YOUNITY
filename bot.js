@@ -1,16 +1,16 @@
-import express from 'express';
-import TelegramBot from 'node-telegram-bot-api';
-import config from './config/config.js';
-import * as announcementController from './controllers/announcementController.js';
-import * as communityController from './controllers/communityController.js';
-import * as startController from './controllers/startController.js';
-import { isBotAdminInGroup } from './services/adminService.js';
-import { handleOnBoardCommunity } from './controllers/onBoardCommunityController.js';
-import { handlePreviewAnnouncement } from './controllers/previewController.js';
-import { myAnnouncements } from './controllers/myAnnouncmentController.js';
-import { myCommunity } from './controllers/myCommunityController.js';
-import { handleHelp } from './controllers/helpController.js';
-import { setupReactionHandler } from './controllers/privateGroupController.js';
+import express from "express";
+import TelegramBot from "node-telegram-bot-api";
+import config from "./config/config.js";
+import * as announcementController from "./controllers/announcementController.js";
+import * as communityController from "./controllers/communityController.js";
+import * as startController from "./controllers/startController.js";
+import { isBotAdminInGroup } from "./services/adminService.js";
+import { handleOnBoardCommunity } from "./controllers/onBoardCommunityController.js";
+import { handlePreviewAnnouncement } from "./controllers/previewController.js";
+import { myAnnouncements } from "./controllers/myAnnouncmentController.js";
+import { myCommunity } from "./controllers/myCommunityController.js";
+import { handleHelp } from "./controllers/helpController.js";
+import { setupReactionHandler } from "./controllers/privateGroupController.js";
 
 const app = express();
 
@@ -26,9 +26,9 @@ bot.setWebHook(`${config.WEBHOOK_URL}/webhook`);
 app.use(express.json());
 
 // Define the webhook endpoint where Telegram will send updates
-app.post('/webhook', (req, res) => {
-  bot.processUpdate(req.body);  // Process the update sent from Telegram
-  res.sendStatus(200);  // Respond with OK status to Telegram
+app.post("/webhook", (req, res) => {
+  bot.processUpdate(req.body); // Process the update sent from Telegram
+  res.sendStatus(200); // Respond with OK status to Telegram
 });
 
 // Fetch bot info (Bot's username and ID)
@@ -178,7 +178,7 @@ bot.onText(/\/help/, (msg) => {
 
 // Handle the /membercount command (returns the number of members in a group)
 bot.onText(/\/membercount/, async (msg) => {
-  const groupId = "-1002387804281";  // Replace with the actual group ID
+  const groupId = "-1002387804281"; // Replace with the actual group ID
   const memberCount = await bot.getChatMemberCount(groupId);
   console.log(`Number of members in chat: ${memberCount}`);
 });

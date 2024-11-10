@@ -1,3 +1,5 @@
+import { config } from "dotenv";
+
 let botInfo = null;
 try {
   botInfo = await bot.getMe();
@@ -19,5 +21,17 @@ export const isBotAdminInGroup = async (bot, chatId) => {
   } catch (error) {
     console.error("Error checking bot admin status:", error.message);
     return false;
+  }
+};
+
+export const isAdmin = async (userId) => {
+  try {
+    if (config.BOT_ADMIN_ID === userId) {
+      return true;
+    }
+
+    return false;
+  } catch (error) {
+    console.error("Error checking admin status:", error.message);
   }
 };
